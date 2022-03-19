@@ -83,7 +83,7 @@ const LightWeightChart = ({ symbol, interval }) => {
       color: "rgba(0, 179, 60, 0.2)",
       visible: true,
       text: "Hikers",
-      fontSize: 32,
+      fontSize: 62,
       horzAlign: "center",
       vertAlign: "center",
     },

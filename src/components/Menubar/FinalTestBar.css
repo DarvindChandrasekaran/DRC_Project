@@ -53,7 +53,6 @@
   align-items: center;
   width: 35px;
   padding: 5px 0 5px 0;
-  margin-top: 50px;
 }
 
 #logo {
@@ -78,6 +77,9 @@
   padding: 1px 6px;
 }
 
+.sidebar-logout {
+  margin-top: 70px;
+}
 
 /* Style links on mouse-over */
 .DP:hover,
@@ -87,7 +89,6 @@
   background: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
 }
-
 
 .responsive-nav-drop {
   display: flex;

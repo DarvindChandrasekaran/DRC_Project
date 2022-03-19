@@ -244,7 +244,6 @@ font-family: 'Red Hat Display', sans-serif;
 .c-top-title {
   padding-top: 5px;
   line-height: 0.7;
-  /* width: 50%; */
 }
 
 #c-title {
@@ -256,7 +255,6 @@ font-family: 'Red Hat Display', sans-serif;
 }
 .c-top-dropdown {
   padding: 10px 20px 0 15px;
-  /* width: 40%; */
   box-sizing: border-box;
 }
 
@@ -267,15 +265,13 @@ font-family: 'Red Hat Display', sans-serif;
 }
 
 #donut {
-  width: 160px;
+  width: 186px;
   height: 100%;
 }
+
 #donut-alt {
   height: 100%;
   width: 230px;
-  /* margin-right: -150px; */
-  /* margin-top: -40px; */
-  /* margin-bottom: -35px; */
 }
 
 .c-bot {
@@ -309,7 +305,6 @@ font-family: 'Red Hat Display', sans-serif;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  /* height: 200px !important; */
 }
 
 /* Responsive Design */
@@ -401,9 +396,7 @@ font-family: 'Red Hat Display', sans-serif;
     margin-block-start: 0.5em;
     margin-block-end: 0.5em;
   }
-  /* #prof-text {
-    font-size: 0.8125em;
-  } */
+
   .c-top-dropdown {
     padding: 10px 10px 0 0px;
     box-sizing: border-box;
@@ -427,9 +420,9 @@ font-family: 'Red Hat Display', sans-serif;
   }
   .Layout {
     height: 100%;
-    /* grid-template-rows: 60px; */
   }
 }
+
 @media only screen and (min-width: 1024px) and (max-width: 1100px) {
   #prof-bal {
     font-size: 0.9375rem;
@@ -441,30 +434,6 @@ font-family: 'Red Hat Display', sans-serif;
     font-size: 0.6875rem;
   }
 }
-
-/* @media only screen and (min-width: 1025px) and (max-width: 1130px) {
-  .profile-details {
-    padding: 5px 0 0 30px;
-    line-height: 1.3;
-    font-size: 0.75em;
-  }
-  #prof-head {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-block-start: 0.4em;
-    margin-block-end: 0.4em;
-    line-height: 1;
-  }
-  #prof-bal {
-    font-size: 1.1em;
-    margin-block-start: 0.4em;
-    margin-block-end: 0.5em;
-    line-height: 1;
-  }
-   .Table {
-    margin-bottom: -30px;
-  } 
-} */
 
 @media only screen and (min-width: 1025px) and (max-width: 1092px) {
   .Table-header {
@@ -479,7 +448,6 @@ font-family: 'Red Hat Display', sans-serif;
 @media only screen and (min-width: 769px) and (max-width: 1024px) {
   .Layout {
     height: 100%;
-    /* grid-template-rows: 60px; */
   }
   .profile-details {
     padding: 5px 0 0 30px;
@@ -528,12 +496,7 @@ font-family: 'Red Hat Display', sans-serif;
   .Table-header {
     margin-bottom: -30px;
   }
-  /* .Table {
-    margin-top: 20px;
-    height: 50vh;
-  } */
 }
-
 /* 481px until 768px (small screen) ----------- */
 
 @media only screen and (max-width: 768px) {
@@ -606,14 +569,11 @@ font-family: 'Red Hat Display', sans-serif;
     width: 310px;
     margin-top: -100px;
     margin-right: -150px;
-    /* margin-bottom: -35px; */
   }
   .c-bot {
     display: flex;
     flex-direction: column;
     justify-content: start;
-    /* font-size: 1rem;
-    line-height: 3; */
     padding: 10px 0 0 10px;
   }
   #c-title {
@@ -633,13 +593,7 @@ font-family: 'Red Hat Display', sans-serif;
     font-size: 1rem;
     margin-top: -10px;
   }
-  /* .Table {
-    grid-row: 9;
-    margin-top: 20px;
-    height: 100vh;
-  } */
 }
-
 @media only screen and (max-width: 450px) {
   #donut {
     width: 11.25rem;
@@ -679,6 +633,7 @@ font-family: 'Red Hat Display', sans-serif;
     width: 250px;
   }
 }
+
 @media only screen and (max-width: 320px) {
   #donut {
     width: 7rem;

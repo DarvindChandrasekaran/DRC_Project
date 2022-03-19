@@ -111,7 +111,7 @@
   justify-content: center;
 }
 
-.title-section {
+.time-date-section {
   grid-column: 5/7;
   grid-row: 2;
   display: flex;
@@ -129,9 +129,14 @@
   grid-row: 2/8;
 }
 
+.balance-section {
+  grid-column: 5/7;
+  grid-row: 3/4;
+}
+
 .buysell-section {
   grid-column: 5/7;
-  grid-row: 3/7;
+  grid-row: 4/8;
 }
 
 .gain-section {
@@ -175,7 +180,17 @@
   color: #11d811;
 }
 
-@media only screen and (max-height: 729px) {
+@media only screen and (max-width: 950px) {
+  .time-date-section {
+    grid-column: 4/7;
+    grid-row: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+}
+
+@media only screen and (max-height: 900px) {
   .market-layout {
     height: 900px;
     overflow: hidden;
@@ -209,6 +224,17 @@
   .loss-section {
     padding: 0 25px;
     display: none;
+  }
+  .time-date-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .market-bar-section {
+    height: 35px;
+  }
+  .graph-section {
+    margin-top: -20px;
   }
 }
 /* ------------------------------------ =========== ----------------------------------------- */

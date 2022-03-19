@@ -1,5 +1,4 @@
 import React from "react";
-import IconTest from "../../assets/DashboardAsset/WalletIconDark.svg";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
@@ -17,8 +16,6 @@ const CardContentNoPadding = styled(CardContent)(`
 
 const RenderCard = ({ pair, src, name }) => {
   const [, , , , , close, , , percent] = useBinanceData(pair);
-  // props.databaseData;
-  // console.log(databaseData);
   return (
     <Card sx={{ maxWidth: 195, maxHeight: 125, borderRadius: 3 }}>
       <CardHeader

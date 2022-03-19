@@ -6,6 +6,7 @@ import Menubar from "../Menubar/Menubar";
 import { useForm } from "react-hook-form";
 import ToLoginModal from "../Modal/ToLoginModal";
 import { BASE_URL } from "../ApiBinance/HikersAPI";
+import classes from "../Home/Home.module.css";
 
 const Signup = () => {
   const [theme, setTheme] = useState("dark");
@@ -248,7 +249,7 @@ const Signup = () => {
           </div>
         </div>
       </div>
-      <Footer className="signup-footer" />
+      <Footer className={`${classes.home_footer} signup-footer`} />
     </div>
   );
 };

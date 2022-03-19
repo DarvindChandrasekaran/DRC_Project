@@ -59,8 +59,12 @@
 .card-name {
   font-size: 1.1vw;
   width: 65%;
-  color: white;
+  color: white !important;
   text-align: center;
+}
+
+.card-fullname {
+  color: white !important;
 }
 
 .card-arrow {

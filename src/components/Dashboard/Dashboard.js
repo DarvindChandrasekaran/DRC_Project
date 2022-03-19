@@ -161,6 +161,23 @@ function Dashboard(props) {
     return sellArr;
   };
 
+  let currentAssetWithAvg = () => {
+    let result = currentAsset();
+    result = result.map((item) => {
+      let newItem;
+      databaseAvgPrice.map((subItem) => {
+        if (item.currency === subItem.currency) {
+          item.average_price = subItem.avg_price;
+          newItem = item;
+        }
+      });
+
+      return newItem;
+    });
+
+    return result;
+  };
+
   let profitnLoss = (price, avg) => {
     let calculation1 = ((price - avg) / avg) * 100;
     if (calculation1 > 0) {
@@ -211,7 +228,7 @@ function Dashboard(props) {
             <span>Bought Assets</span>
           </div>
           <div className="wrap">
-            <Slider backendData={buyArr} />
+            <Slider backendData={currentAssetWithAvg()} />
           </div>
         </div>
         <div className="Profile">
@@ -353,6 +370,7 @@ function Dashboard(props) {
                       console.log("profitnloss", profitnLoss());
                       console.log("live data", asset_database);
                       console.log("currentAsset", currentAsset());
+                      console.log("currentAseet AVG", currentAssetWithAvg());
                       console.log(
                         "coin value",
                         currentAsset()
@@ -415,7 +433,7 @@ function Dashboard(props) {
                               .filter(
                                 (c) => c.currency === chart.data.labels[i]
                               )
-                              .map((b) => b.quantity)}`,
+                              .map((b) => b.quantity.toFixed(2))}`,
                             fillStyle: datasets[0].backgroundColor[i],
                           }));
                         },

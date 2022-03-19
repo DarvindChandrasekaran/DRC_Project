@@ -10,18 +10,18 @@ const WalletReloadModal = (props) => {
   const [topup_amount, setTopupAmount] = useState(0);
   const [input_err, setInputError] = useState("");
   const [message, setMessage] = useState("");
-  const { user_data, is_data_ready, wallet_list, fetchWalleList, checkJWT } =
+  const { user_data, is_data_ready, wallet_list, fetchWalletList, checkJWT } =
     useContext(SiteDataContext);
   const navigate = useNavigate();
-  
+
   //SET USER SELECTED WALLET
   useEffect(() => {
-    if (wallet_list?.length > 0) {
+    if (wallet_list && wallet_list?.length > 0) {
       setSelectedWallet(wallet_list.find((w) => w.currency === "USD"));
     }
   }, [wallet_list]);
 
-  //REQ TO BE FOR TRANSACTION HISTORY
+  //REQ TO BE FOR TRANSACTION HISTORYx1
   const getHistory = async () => {
     const { loginid, token } = user_data;
     const req = new Request(`${BASE_URL}/transaction/${loginid}`, {
@@ -60,7 +60,7 @@ const WalletReloadModal = (props) => {
       fetch(req).then((res) => {
         res.json().then((data) => {
           console.log(data.balance);
-          fetchWalleList();
+          fetchWalletList();
         });
       });
     } else {

@@ -20,9 +20,9 @@ const SiteData = ({ children }) => {
     }
   }, []);
 
-  const fetchWalleList = async () => {
+  const fetchWalletList = async () => {
     try {
-      if (user_data) {
+      if (user_data && checkJWT()) {
         const { loginid, token } = user_data;
         const result = await fetch(`${BASE_URL}/wallet/${loginid}`, {
           method: "POST",
@@ -41,7 +41,7 @@ const SiteData = ({ children }) => {
 
   useEffect(() => {
     setDataReady(false);
-    fetchWalleList().then(() => {
+    fetchWalletList().then(() => {
       setDataReady(true);
     });
   }, [user_data]);
@@ -49,6 +49,7 @@ const SiteData = ({ children }) => {
   const handleLogin = async (user_data) => {
     setDataReady(false);
     localStorage.removeItem("user_data");
+    setUserData(null);
     const login_credentials = {
       ...user_data,
     };
@@ -69,7 +70,7 @@ const SiteData = ({ children }) => {
       // loginid, username, full_name, email, phone, date_joined
       setUserData(data);
       localStorage.setItem("user_data", JSON.stringify(data));
-      await fetchWalleList();
+      await fetchWalletList();
       setDataReady(true);
       return true;
     }
@@ -94,6 +95,7 @@ const SiteData = ({ children }) => {
     // JWT exp is in seconds
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
       localStorage.removeItem("user_data");
+      setUserData(null);
       return false;
     } else {
       return true;
@@ -109,7 +111,7 @@ const SiteData = ({ children }) => {
         handleLogout,
         is_data_ready,
         wallet_list,
-        fetchWalleList,
+        fetchWalletList,
         pair,
         setPair,
         checkJWT,
