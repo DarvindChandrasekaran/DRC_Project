@@ -50,6 +50,7 @@ const SiteData = ({ children }) => {
     setDataReady(false);
     localStorage.removeItem("user_data");
     setUserData(null);
+    setWalletList([]);
     const login_credentials = {
       ...user_data,
     };

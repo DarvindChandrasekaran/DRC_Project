@@ -1,240 +1,58 @@
-/* ------------------------------------ Market Page ----------------------------------------- */
-
-/* Market list */
-
-.coin-market {
-  background-color: black;
-  width: 40%;
-}
-
-/* Top Area */
-
-.list-top {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.coin-search {
-  width: 90%;
-}
-.search-input {
-  height: 3vh;
-  width: 60%;
-  margin-bottom: 2%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.coin-close {
-  width: 10%;
-  color: white;
-}
-
-.close-button {
-  float: right;
-  background-color: aqua;
-}
-
-/* Crypto Marketlist display */
-
-.coin-table {
-  width: 100%;
-}
-
-.list-row > td {
-  text-align: center;
-}
-
-.table-body tr:hover {
-  background-color: dimgray;
-}
-
-.table-header {
-  width: 98.7%;
-  display: inline-table;
-}
-
-.table-body {
-  width: 100%;
-  display: inline-table;
-}
-
-.coin-market {
-  position: absolute;
-  z-index: 999999;
-}
-
-.coin-list {
-  height: 35vh;
-  overflow-y: scroll;
-  width: 100%;
-  color: beige;
-}
-
-.marketBG {
+.market-container {
+  padding-left: 60px;
   background-color: #1f1f1f;
   background-image: url("../../assets/DashboardAsset/Wave\ \(Dark\).svg");
   background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
   color: white;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-.market-layout {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(11, 1fr);
-  grid-gap: 25px;
-  margin: 0 50px 0 110px;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.box {
-  background-color: darkgray;
-  border: 5px black;
-  border-radius: 20px;
-}
-
-.market-bar-section {
-  grid-column: 1/7;
-  grid-row: 1;
-}
-
-.mini-message {
-  font-size: 14px;
+.market-section {
   display: flex;
-  justify-content: center;
+  gap: 2rem;
+  margin: 1rem auto 0;
 }
 
-.time-date-section {
-  grid-column: 5/7;
-  grid-row: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.125rem;
+.market-section > .chart {
+  width: 70%;
+  padding-left: 1.2rem;
 }
 
-#current-date-display {
-  padding-right: 20px;
+.market-section > .transaction {
+  width: 30%;
+  height: 710px;
+  padding-right: 1.2rem;
 }
 
-.graph-section {
-  grid-column: 1/5;
-  grid-row: 2/8;
-}
-
-.balance-section {
-  grid-column: 5/7;
-  grid-row: 3/4;
-}
-
-.buysell-section {
-  grid-column: 5/7;
-  grid-row: 4/8;
-}
-
-.gain-section {
-  grid-column: 1/5;
-  grid-row: 8/10;
-  margin-top: 20px;
-}
-
-.gain-title {
-  font-size: 18px;
-  margin: 0;
-  padding: 10px 0 5px 0;
-}
-
-.loss-section {
-  grid-column: 1/5;
-  grid-row: 10/12;
-  margin-top: -10px;
-}
-
-.loss-title {
-  font-size: 18px;
-  margin: 0;
-  padding: 10px 0 5px 0;
-}
-
-.image {
-  height: 20px;
-  width: 20px;
-}
-
-.cryptoName {
-  font-size: 16px;
-}
-
-.red {
-  color: #f00606;
-}
-
-.green {
-  color: #11d811;
-}
-
-@media only screen and (max-width: 950px) {
-  .time-date-section {
-    grid-column: 4/7;
-    grid-row: 2;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
+@media (max-width: 768px) {
+  .market-container {
+    width: 100%;
+    margin: unset;
+    margin-top: 60px;
+    padding-left: 0;
   }
-}
 
-@media only screen and (max-height: 900px) {
-  .market-layout {
-    height: 900px;
-    overflow: hidden;
-  }
-  .marketBG {
-    background-color: #1f1f1f;
-    height: 900px;
-    background-image: url("../../assets/DashboardAsset/Wave\ \(Dark\).svg");
-    background-position: bottom;
-    background-repeat: no-repeat;
-    background-size: cover;
-    color: white;
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  .marketBG {
-    height: 100%;
-  }
-  .market-layout {
+  .market-section {
     display: flex;
     flex-direction: column;
-    margin: 0px 15px 0 15px;
-    padding-top: 10px;
-    height: 100%;
-  }
-  .gain-section {
-    padding: 0 25px;
-    display: none;
-  }
-  .loss-section {
-    padding: 0 25px;
-    display: none;
-  }
-  .time-date-section {
-    display: flex;
     align-items: center;
-    justify-content: center;
+    margin: unset;
+    gap: unset;
   }
-  .market-bar-section {
-    height: 35px;
+
+  .market-section > .chart {
+    width: 90%;
+    padding: unset;
   }
-  .graph-section {
-    margin-top: -20px;
+
+  .market-section > .transaction {
+    width: 90%;
+    padding: unset;
+  }
+
+  .market-trends-section {
+    display: none;
   }
 }
-/* ------------------------------------ =========== ----------------------------------------- */

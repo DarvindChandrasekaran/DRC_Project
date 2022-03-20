@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import "./Linechart.css";
@@ -7,98 +7,111 @@ import annotationPlugin from "chartjs-plugin-annotation";
 import zoomPlugin from "chartjs-plugin-zoom";
 Chart.register(...registerables, annotationPlugin, zoomPlugin);
 
-function App() {
-  const [pair, setPair] = useState("bitcoin");
-  const [time, price] = useGeckoData(pair);
+function App({ crypto, bought_price }) {
+  const [time, price, is_ready] = useGeckoData(crypto);
+  const [options, setOptions] = React.useState();
+  const line_chart_ref = React.useRef();
 
-  let time_label = time;
-  let price_data = price;
+  React.useEffect(() => {
+    if (line_chart_ref?.current) {
+      line_chart_ref?.current?.chartInstance?.destroy();
+    }
 
-  const options = {
-    scales: {
-      x: {
-        //LIMIT TO 10 DATA AT A TIME
-        min: time_label[time_label.length - 10],
-      },
-      y: {
-        min: () => {
-          Math.min(price_data);
-        },
-        max: () => {
-          Math.max(price_data);
-        },
-      },
-    },
-    plugins: {
-      autocolors: false,
-      legend: {
-        display: false,
-      },
-      annotation: {
-        annotations: {
-          line1: {
-            type: "line",
-            yScaleId: "yAxis",
-            //WHERE BOUGHT PRICE IS SPECIFIED
-            yMin: 38140.12,
-            yMax: 38140.12,
-            borderColor: "rgb(255, 99, 132)",
-            borderWidth: 2,
-            label: {
-              content: 38140.12,
-              enabled: true,
-              position: "right",
+    if (time && price) {
+      const new_options = {
+        scales: {
+          x: {
+            min: time[time.length - 10],
+          },
+          y: {
+            min: () => {
+              Math.min(price);
+            },
+            max: () => {
+              Math.max(price);
             },
           },
         },
-      },
-      responsive: true,
-      maintainAspectRatio: true,
-      zoom: {
-        pan: {
-          enabled: true,
-          drag: true,
-          mode: "x",
-          speed: 10,
-          threshold: 10,
-          rangeMin: {
-            x: -365,
+        plugins: {
+          autocolors: false,
+          legend: {
+            display: false,
+          },
+          annotation: {
+            annotations: {
+              line1: {
+                type: "line",
+                yScaleId: "yAxis",
+                yMin: bought_price,
+                yMax: bought_price,
+                borderColor: "rgb(255, 99, 132)",
+                borderWidth: 2,
+                label: {
+                  content: bought_price,
+                  enabled: true,
+                  position: "right",
+                },
+              },
+            },
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          zoom: {
+            pan: {
+              enabled: true,
+              drag: true,
+              mode: "x",
+              speed: 10,
+              threshold: 10,
+              rangeMin: {
+                x: -365,
+              },
+            },
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true,
+              },
+              mode: "x",
+            },
+            animation: {
+              duration: 0,
+            },
           },
         },
-        zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: true,
-          },
-          mode: "x",
-        },
-        animation: {
-          duration: 0,
-        },
-      },
-    },
-  };
+      };
+
+      setOptions((prev) => ({ ...prev, ...new_options }));
+    }
+  }, [crypto]);
+
+  if (!is_ready) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <div className="app">
       <div className="line-chart-container">
         <Line
+          key={crypto + bought_price}
+          ref={line_chart_ref}
           className="line-dash"
           data={{
-            labels: time_label,
+            labels: time,
             datasets: [
               {
-                data: price_data,
+                data: price,
                 fill: true,
                 backgroundColor: "rgba(75,192,192,0.1)",
                 borderColor: "rgba(75,192,192,1)",
-                pointRadius: 0.5,
+                pointRadius: 4,
               },
             ],
           }}
           options={options}
+          redraw
         />
       </div>
     </div>

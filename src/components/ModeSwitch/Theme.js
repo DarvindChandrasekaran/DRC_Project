@@ -12,6 +12,7 @@ import WalletIconLight from "../../assets/DashboardAsset/WalletIconLight.svg";
 //object that references to the color properties
 export const lightTheme = {
   body: "#fff",
+  borderColor: "rgb(87, 87, 87)",
   fontColor: "#000",
   backgroundImg: `url(${LightWave})`,
   cardBorder: "1px solid #c2c2c2",
@@ -28,6 +29,7 @@ export const lightTheme = {
 
 export const darkTheme = {
   body: "#1F1F1F",
+  borderColor: "rgba(255, 255, 255, 0.3)",
   fontColor: "#fff",
   backgroundImg: `url(${DarkWave})`,
   cardBorder: "black",
@@ -44,13 +46,15 @@ export const darkTheme = {
 
 //base styling (for entire document)
 export const GlobalStyles = createGlobalStyle`
-.login, .signup-container, .DashBG, .marketBG, .Profile_profile_bg__vVrLu {
+.login, .signup-container, .DashBG, .marketBG, .market-container, .time-date-section, .Profile_profile_bg__vVrLu {
   transition: background-color 0.5s ease;
 }
 
+.balance-section {
+  border-color: ${(props) => props.theme.borderColor};
+}
 
-
-.login, .signup-container, .DashBG, .marketBG, .Profile_profile_bg__vVrLu {
+.login, .signup-container, .DashBG, .marketBG, .market-container, .time-date-section, .Profile_profile_bg__vVrLu {
   background-color: ${(props) => props.theme.body} !important;
   color: ${(props) => props.theme.fontColor};
   background-image: ${(props) => props.theme.backgroundImg} !important;

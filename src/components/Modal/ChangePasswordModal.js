@@ -56,7 +56,6 @@ const ChangePasswordModal = (props) => {
 
   // FOR INPUT VALIDATION
   const onSubmit = (data, e) => {
-    console.log(data);
     passwordChangeHandler(data);
     reset();
     setErrorMsg("");

@@ -1,35 +1,47 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import "./Dashboard.css";
-import { Avatar } from "@mui/material";
+import { BASE_URL } from "../ApiBinance/HikersAPI";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
-import Slider from "./DSlider";
+import DSlider from "./DSlider";
 import Dashbar from "../Menubar/HeaderBar";
 import Linechart from "./Linechart";
 import TransTable from "./TransacHist";
 import { SiteDataContext } from "../../SiteData";
 import WalletReloadModal from "../Modal/WalletReloadModal";
-import {
-  EventBusyOutlined,
-  PhotoSizeSelectLargeRounded,
-} from "@mui/icons-material";
+import Logo from "../../assets/Icon_symbol/btc.png";
+import { crypto_list } from "../Icons/icons";
 
 Chart.register(...registerables);
 
 function Dashboard(props) {
-  //light mode and dark mode
-  const [theme, setTheme] = React.useState("dark");
+  const { user_data, is_data_ready, wallet_list } =
+    React.useContext(SiteDataContext);
 
-  const [chartTitle, setChartTitle] = React.useState("Total Profit/Loss");
+  const [is_complete, setComplete] = React.useState(false);
+  const [theme, setTheme] = React.useState("dark");
+  const [chartTitle, setChartTitle] = React.useState("");
   const [getLabel, setLabel] = React.useState(["Loss", "Profit"]);
   const [dataSets, setDataSets] = React.useState([0, 0]);
-  const { user_data, is_data_ready, wallet_list } = useContext(SiteDataContext);
-  const [doughnutType, setDoughnutType] = useState("");
-  const [display, setDisplay] = useState("none");
-  const [asset_database, setAssetDatabase] = useState([]);
+  const [doughnutType, setDoughnutType] = React.useState("");
+  const [display, setDisplay] = React.useState("none");
+  const [asset_database, setAssetDatabase] = React.useState([]);
+  const [selected_crypto, setSelectedCrypto] = React.useState(
+    crypto_list[0].fullname
+  );
+  const [bought_price, setBoughtPrice] = React.useState(0);
+  // Calculations
+  const [buy_list, setBuyList] = React.useState([]);
+  const [sell_list, setSellList] = React.useState([]);
+  const [sum_coin, setSumCoin] = React.useState(0);
+  const [loss, setLoss] = React.useState(0);
+  const [profit, setProfit] = React.useState(0);
+  const [current_asset, setCurrentAsset] = React.useState([]);
+  const [sum_profit, setSumProfit] = React.useState(0);
+  const [sum_loss, setSumLoss] = React.useState(0);
 
   const WalletPopupHandler = () => {
     setDisplay("unset");
@@ -39,12 +51,17 @@ function Dashboard(props) {
     setDoughnutType(e.target.value);
   };
 
+  const handleCardClick = (name, bought_price) => {
+    setSelectedCrypto(name);
+    setBoughtPrice(bought_price);
+  };
+
   let curr_date = new Date();
 
   React.useEffect(() => {
-    const base_url = "https://api.tradehikers.xyz";
+    setComplete(false);
     const { loginid, token } = user_data;
-    const req = new Request(`${base_url}/transaction/${loginid}`, {
+    const req = new Request(`${BASE_URL}/transaction/${loginid}`, {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({ token }),
@@ -52,159 +69,153 @@ function Dashboard(props) {
     fetch(req).then((res) => {
       res.json().then((data) => {
         setAssetDatabase(data);
+        const buy_arr = data.filter((d) => d.transaction_type === "buy");
+        const sell_arr = data.filter((d) => d.transaction_type === "sell");
+
+        setBuyList(buy_arr);
+        setSellList(sell_arr);
+
+        let sell_total_price = [];
+        sell_arr.reduce(function (a, value) {
+          if (!a[value.currency]) {
+            a[value.currency] = {
+              currency: value.currency,
+              total_price: 0,
+              count: 0,
+              quantity: 0,
+            };
+            sell_total_price.push(a[value.currency]);
+          }
+          a[value.currency].total_price += value.current_price * value.quantity;
+          a[value.currency].count += 1;
+          a[value.currency].quantity += value.quantity;
+          return a;
+        }, {});
+
+        let buy_total_price = [];
+        buy_arr.reduce(function (res, value) {
+          if (!res[value.currency]) {
+            res[value.currency] = {
+              currency: value.currency,
+              total_price: 0,
+              count: 0,
+              quantity: 0,
+            };
+            buy_total_price.push(res[value.currency]);
+          }
+          res[value.currency].total_price +=
+            value.current_price * value.quantity;
+          res[value.currency].count += 1;
+          res[value.currency].quantity += value.quantity;
+          return res;
+        }, {});
+
+        let buy_total_price_avg = [];
+        buy_arr.reduce(function (res, value) {
+          if (!res[value.currency]) {
+            res[value.currency] = {
+              currency: value.currency,
+              total_price: 0,
+              count: 0,
+              quantity: 0,
+            };
+            buy_total_price_avg.push(res[value.currency]);
+          }
+          res[value.currency].total_price += value.current_price;
+          res[value.currency].count += 1;
+          res[value.currency].quantity += value.quantity;
+          return res;
+        }, {});
+
+        let database_avg_price = [];
+        buy_total_price_avg.forEach((element) => {
+          let tempObj = {};
+          tempObj["currency"] = element.currency;
+          let calc = element.total_price / element.count;
+          tempObj["avg_price"] = calc;
+          database_avg_price.push(tempObj);
+        });
+
+        const sellArrWithAvg = () => {
+          sell_arr.map((item) => {
+            database_avg_price.map((subItem) => {
+              if (item.currency === subItem.currency) {
+                item.average_price = subItem.avg_price;
+              }
+            });
+          });
+
+          return sell_arr;
+        };
+
+        const currentAsset = () => {
+          let buysell = buy_total_price.concat(sell_total_price);
+          let result = {};
+          buysell.map((item) => {
+            result[item.currency] = {
+              currency: item.currency,
+              total_price: result[item.currency]
+                ? result[item.currency].total_price - item.total_price
+                : item.total_price,
+              quantity: result[item.currency]
+                ? result[item.currency].quantity - item.quantity
+                : item.quantity,
+            };
+          });
+          result = Object.values(result);
+
+          return result;
+        };
+
+        setCurrentAsset(currentAsset());
+
+        const profit_arr = [];
+        const lost_arr = [];
+
+        const profitnLoss = (price, avg) => {
+          let calculation1 = ((price - avg) / avg) * 100;
+          if (calculation1 > 0) {
+            profit_arr.push(calculation1);
+          } else {
+            lost_arr.push(Math.abs(calculation1));
+          }
+        };
+
+        sellArrWithAvg().forEach((element) => {
+          profitnLoss(element.current_price, element.average_price);
+        });
+
+        const sumProfit = profit_arr.reduce(
+          (totalProfit, number) => totalProfit + number,
+          0
+        );
+        const sumLoss = lost_arr.reduce(
+          (totalLoss, number) => totalLoss + number,
+          0
+        );
+
+        setSumProfit(sumProfit);
+        setSumLoss(sumLoss);
+
+        const profit_percent = (sumProfit / (sumLoss + sumProfit)) * 100;
+        const loss_percent = (sumLoss / (sumLoss + sumProfit)) * 100;
+
+        setProfit(profit_percent);
+        setLoss(loss_percent);
+
+        const sum_coin_value = currentAsset()
+          .filter((c) => c.currency !== "USD")
+          .map((b) => b.total_price)
+          .reduce((a, number) => a + number, 0);
+
+        setSumCoin(sum_coin_value);
+        setComplete(true);
+        setChartTitle("Total Profit/Loss");
       });
     });
-  }, []);
+  }, [user_data]);
 
-  let profitArr = [];
-  let lossArr = [];
-
-  let buyArr = [];
-  let sellArr = [];
-
-  asset_database.forEach((element) => {
-    if (element.transaction_type === "sell") {
-      sellArr.push(element);
-    } else {
-      buyArr.push(element);
-    }
-  });
-
-  let sellTotalPrice = [];
-  sellArr.reduce(function (a, value) {
-    if (!a[value.currency]) {
-      a[value.currency] = {
-        currency: value.currency,
-        total_price: 0,
-        count: 0,
-        quantity: 0,
-      };
-      sellTotalPrice.push(a[value.currency]);
-    }
-    a[value.currency].total_price += value.current_price * value.quantity;
-    a[value.currency].count += 1;
-    a[value.currency].quantity += value.quantity;
-    return a;
-  }, {});
-
-  let buyTotalPrice = [];
-  buyArr.reduce(function (res, value) {
-    if (!res[value.currency]) {
-      res[value.currency] = {
-        currency: value.currency,
-        total_price: 0,
-        count: 0,
-        quantity: 0,
-      };
-      buyTotalPrice.push(res[value.currency]);
-    }
-    res[value.currency].total_price += value.current_price * value.quantity;
-    res[value.currency].count += 1;
-    res[value.currency].quantity += value.quantity;
-    return res;
-  }, {});
-
-  let buyTotalPriceAvg = [];
-  buyArr.reduce(function (res, value) {
-    if (!res[value.currency]) {
-      res[value.currency] = {
-        currency: value.currency,
-        total_price: 0,
-        count: 0,
-        quantity: 0,
-      };
-      buyTotalPriceAvg.push(res[value.currency]);
-    }
-    res[value.currency].total_price += value.current_price;
-    res[value.currency].count += 1;
-    res[value.currency].quantity += value.quantity;
-    return res;
-  }, {});
-
-  let currentAsset = () => {
-    let buysell = buyTotalPrice.concat(sellTotalPrice);
-    let result = {};
-    buysell.map((item) => {
-      result[item.currency] = {
-        currency: item.currency,
-        total_price: result[item.currency]
-          ? result[item.currency].total_price - item.total_price
-          : item.total_price,
-        quantity: result[item.currency]
-          ? result[item.currency].quantity - item.quantity
-          : item.quantity,
-      };
-    });
-    result = Object.values(result);
-
-    return result;
-  };
-
-  let databaseAvgPrice = [];
-  buyTotalPriceAvg.forEach((element) => {
-    let tempObj = {};
-    tempObj["currency"] = element.currency;
-    let calc = element.total_price / element.count;
-    tempObj["avg_price"] = calc;
-    databaseAvgPrice.push(tempObj);
-  });
-
-  let sellArrWithAvg = () => {
-    sellArr.map((item) => {
-      databaseAvgPrice.map((subItem) => {
-        if (item.currency === subItem.currency) {
-          item.average_price = subItem.avg_price;
-        }
-      });
-    });
-
-    return sellArr;
-  };
-
-  let currentAssetWithAvg = () => {
-    let result = currentAsset();
-    result = result.map((item) => {
-      let newItem;
-      databaseAvgPrice.map((subItem) => {
-        if (item.currency === subItem.currency) {
-          item.average_price = subItem.avg_price;
-          newItem = item;
-        }
-      });
-
-      return newItem;
-    });
-
-    return result;
-  };
-
-  let profitnLoss = (price, avg) => {
-    let calculation1 = ((price - avg) / avg) * 100;
-    if (calculation1 > 0) {
-      profitArr.push(calculation1);
-    } else {
-      lossArr.push(Math.abs(calculation1));
-    }
-  };
-
-  sellArrWithAvg().forEach((element) => {
-    profitnLoss(element.current_price, element.average_price);
-  });
-
-  const sumProfit = profitArr.reduce(
-    (totalProfit, number) => totalProfit + number,
-    0
-  );
-  const sumLoss = lossArr.reduce((totalLoss, number) => totalLoss + number, 0);
-  const profitPercent = (sumProfit / (sumLoss + sumProfit)) * 100;
-  const lossPercent = (sumLoss / (sumLoss + sumProfit)) * 100;
-
-  const sumCoinValue = currentAsset()
-    .filter((c) => c.currency !== "USD")
-    .map((b) => b.total_price)
-    .reduce((a, number) => a + number, 0);
-
-  let positioning = () => {
+  const positioning = () => {
     if (window.innerWidth < 768) {
       return "right";
     } else {
@@ -212,7 +223,7 @@ function Dashboard(props) {
     }
   };
 
-  if (!is_data_ready) {
+  if (!is_data_ready || !is_complete) {
     return <h1>Loading..</h1>;
   }
 
@@ -227,9 +238,10 @@ function Dashboard(props) {
           <div className="b-title">
             <span>Bought Assets</span>
           </div>
-          <div className="wrap">
-            <Slider backendData={currentAssetWithAvg()} />
-          </div>
+          <DSlider
+            transaction_data={asset_database}
+            selectCrypto={handleCardClick}
+          />
         </div>
         <div className="Profile">
           <div className="profile-details-box">
@@ -242,38 +254,27 @@ function Dashboard(props) {
                 Asset's Balance as on {curr_date.toDateString()}
               </p>
               <p id="prof-bal">
-                USD &nbsp; {sumCoinValue.toLocaleString("en-US") || "0"}
+                USD &nbsp; {sum_coin.toLocaleString("en-US") || "0"}
               </p>
             </div>
           </div>
           <div className="profile-avatar">
-            <Avatar
-              alt="user's pic"
-              src={props.dashDP}
-              sx={[
-                {
-                  "@media (max-width: 1720px)": {
-                    width: 55,
-                    height: 55,
-                  },
-                  "@media (max-width: 1070px)": {
-                    width: 50,
-                    height: 50,
-                  },
-                  "@media (max-width: 1024px)": {
-                    width: 50,
-                    height: 50,
-                  },
-                  width: 65,
-                  height: 65,
-                },
-              ]}
-            />
+            <img alt="user's pic" src={props.dashDP} className="profile_pic" />
           </div>
         </div>
         <div className="LiveCharts-header">Current Trend (Since buy Price)</div>
         <div className="LiveCharts">
-          <Linechart />
+          <div className="icon-wrapper">
+            <img
+              src={
+                crypto_list.find((cl) => cl.fullname === selected_crypto).src
+              }
+              alt="hello test"
+              style={{ width: "30px" }}
+            />
+            <h2>{selected_crypto}</h2>
+          </div>
+          <Linechart crypto={selected_crypto} bought_price={bought_price} />
         </div>
         <div className="Wallet">
           <div className="w-value">
@@ -353,33 +354,8 @@ function Dashboard(props) {
                   <MenuItem
                     onClick={() => {
                       setLabel(["Loss", "Profit"]);
-                      setDataSets([lossPercent, profitPercent]);
+                      setDataSets([loss, profit]);
                       setChartTitle("Total Profit/Loss");
-
-                      console.log("buy", buyArr);
-                      console.log("sell", sellArr);
-                      console.log("profit", profitArr);
-                      console.log("loss", lossArr);
-                      console.log(sumProfit);
-                      console.log("sum loss", sumLoss);
-                      // console.log("dataBuy", databaseBuy);
-                      console.log("buyTotal", buyTotalPrice);
-                      console.log("sellTotal", sellTotalPrice);
-                      console.log("avg", databaseAvgPrice);
-                      console.log("add avg ", sellArrWithAvg());
-                      console.log("profitnloss", profitnLoss());
-                      console.log("live data", asset_database);
-                      console.log("currentAsset", currentAsset());
-                      console.log("currentAseet AVG", currentAssetWithAvg());
-                      console.log(
-                        "coin value",
-                        currentAsset()
-                          .filter((c) => c.currency !== "USD")
-                          .map((b) => b.total_price)
-                      );
-                      console.log("coin sum", sumCoinValue);
-                      // handleClickTrial();
-                      // console.log("hi, ", processedInput);
                     }}
                     sx={{
                       height: 30,
@@ -392,12 +368,12 @@ function Dashboard(props) {
                   <MenuItem
                     onClick={() => {
                       setLabel(
-                        currentAsset()
+                        current_asset
                           .filter((c) => c.currency !== "USD")
                           .map((a) => a.currency)
                       );
                       setDataSets(
-                        currentAsset()
+                        current_asset
                           .filter((c) => c.currency !== "USD")
                           .map((b) => b.total_price)
                       );
@@ -429,7 +405,7 @@ function Dashboard(props) {
                         generateLabels: (chart) => {
                           const datasets = chart.data.datasets;
                           return datasets[0].data.map((data, i) => ({
-                            text: `${chart.data.labels[i]} ${currentAsset()
+                            text: `${chart.data.labels[i]} ${current_asset
                               .filter(
                                 (c) => c.currency === chart.data.labels[i]
                               )
@@ -503,7 +479,9 @@ function Dashboard(props) {
                 {chartTitle === "Total Profit/Loss"
                   ? `Total Profit:
                   ${
-                    sumProfit ? Number.parseFloat(sumProfit).toFixed(2) : "0.00"
+                    sum_profit
+                      ? Number.parseFloat(sum_profit).toFixed(2)
+                      : "0.00"
                   } USD`
                   : ""}
               </p>
@@ -511,7 +489,7 @@ function Dashboard(props) {
                 {chartTitle === "Total Profit/Loss"
                   ? `Total Loss:
                   ${
-                    sumLoss ? Number.parseFloat(sumLoss).toFixed(2) : "0.00"
+                    sum_loss ? Number.parseFloat(sum_loss).toFixed(2) : "0.00"
                   } USD`
                   : ""}
               </p>

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, memo } from "react";
 import "./lightweight-chart.css";
 import Logo from "../../assets/Logo/L_menulogo.svg";
 
-const LightWeightChart = ({ symbol, interval }) => {
+const LightWeightChart = ({ symbol, interval, onLoadComplete }) => {
   // const [symbol, setSymbol] = useState("BTCUSDT");
   const [is_loading, setIsLoading] = useState(false);
   // const [width, setWidth] = useState(window.visualViewport.width - 500);
@@ -54,6 +54,7 @@ const LightWeightChart = ({ symbol, interval }) => {
           //Set historical data
           setChartData(curr_data);
           setMounted(true);
+          onLoadComplete(true);
         });
     };
     return () => socket.current.close();

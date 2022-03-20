@@ -33,13 +33,11 @@ const WalletReloadModal = (props) => {
     });
     const result = await fetch(req);
     const data = await result.json();
-    console.log(data);
   };
 
   //REQ TO BE FOR RELOAD/TRANSFER PROCESS
   const reloadWallet = () => {
     let is_authenticated = checkJWT();
-    console.log(is_authenticated);
 
     if (is_authenticated) {
       const reload_info = {
@@ -59,7 +57,6 @@ const WalletReloadModal = (props) => {
       );
       fetch(req).then((res) => {
         res.json().then((data) => {
-          console.log(data.balance);
           fetchWalletList();
         });
       });
@@ -110,7 +107,6 @@ const WalletReloadModal = (props) => {
                 className={classes.wallet_currency}
                 value={selected_wallet?.currency}
                 onChange={(e) => {
-                  console.log(e.target.value);
                   setSelectedWallet(
                     wallet_list.find((w) => w.currency === e.target.value)
                   );

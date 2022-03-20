@@ -14,7 +14,6 @@ import "./BuySellTabs.css";
 import { SiteDataContext } from "../../SiteData";
 import { BASE_URL } from "../ApiBinance/HikersAPI";
 import useBinanceData from "../ApiBinance/binance-data";
-import { red } from "@mui/material/colors";
 
 const BuySellInput = styled(TextField)(({ theme }) => ({
   "& .MuiInputLabel-root": {
@@ -34,33 +33,20 @@ const BuySellInput = styled(TextField)(({ theme }) => ({
       : {
           color: "black",
         },
-  "& .MuiOutlinedInput-root":
-    // theme === "dark"
-    //   ?
-    {
-      borderRadius: 10,
-      color: "#E5E5E5",
-      "& fieldset": {
-        borderColor: "#BDBDBD",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "#BDBDBD",
-      },
-      "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
-        border: "2px solid",
-        borderColor: "yellow",
-      },
+  "& .MuiOutlinedInput-root": {
+    borderRadius: 10,
+    color: "#E5E5E5",
+    "& fieldset": {
+      borderColor: "#BDBDBD",
     },
-  // : {
-  //     borderRadius: 10,
-  //     color: "#000000",
-  //     "& fieldset": {
-  //       borderColor: "#616161",
-  //     },
-  //     "&.Mui-focused fieldset": {
-  //       borderColor: "#7E7E7E",
-  //     },
-  //   },
+    "&.Mui-focused fieldset": {
+      borderColor: "#BDBDBD",
+    },
+    "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
+      border: "2px solid",
+      borderColor: "yellow",
+    },
+  },
   "& .MuiOutlinedInput-root":
     theme === "dark"
       ? {
@@ -91,9 +77,6 @@ const BuySellInput = styled(TextField)(({ theme }) => ({
       borderColor: "#727272 !important",
     },
   },
-  // "& .MuiTypography-root": {
-  //   "-webkit-text-fill-color": "rgba(255, 255, 255, 1)!important",
-  // },
 }));
 
 function TabPanel(props) {
@@ -129,22 +112,28 @@ function a11yProps(index) {
   };
 }
 
-export default function FullWidthTabs(props) {
-  const { theme } = props;
-  const [value, setValue] = React.useState(0);
-  const { user_data, is_data_ready, fetchWalletList, pair, checkJWT } =
+export default function FullWidthTabs({
+  theme,
+  handleTransaction,
+  setTransactionType,
+  pair,
+}) {
+  const { user_data, is_data_ready, fetchWalletList, checkJWT } =
     useContext(SiteDataContext);
+  const [value, setValue] = React.useState(0);
   const [ask, , , , , , , , ,] = useBinanceData(pair);
   const [quantity, setQuantity] = useState(0);
   const [error_message, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const [transaction_details, setTransactionDetails] = useState(null);
+
+  React.useEffect(() => {
+    setQuantity(0);
+    setValue(0);
+  }, [pair]);
 
   //REQ TO BE FOR BUY TRANSACTION
   const buyCrypto = () => {
-    let is_authenticated = checkJWT();
-    console.log(is_authenticated);
-    if (is_authenticated) {
+    if (checkJWT()) {
       const buy_info = {
         token: user_data.token,
         loginid: user_data.loginid,
@@ -168,12 +157,7 @@ export default function FullWidthTabs(props) {
           } else {
             setErrorMessage("Transaction successful.");
             fetchWalletList();
-            setTransactionDetails((prev) => {
-              return {
-                ...prev,
-                ...data,
-              };
-            });
+            handleTransaction(data);
           }
         });
       });
@@ -209,12 +193,7 @@ export default function FullWidthTabs(props) {
           } else {
             setErrorMessage("Transaction successful.");
             fetchWalletList();
-            setTransactionDetails((prev) => {
-              return {
-                ...prev,
-                ...data,
-              };
-            });
+            handleTransaction(data);
           }
         });
       });
@@ -230,6 +209,7 @@ export default function FullWidthTabs(props) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    setTransactionType(newValue === 0 ? "buy" : "sell");
     setErrorMessage("");
   };
 
@@ -464,19 +444,6 @@ export default function FullWidthTabs(props) {
           </Button>
         </div>
       </TabPanel>
-      {transaction_details && (
-        <div>
-          <div>
-            Type:{transaction_details.transaction_type} Currency:{" "}
-            {transaction_details.currency} Status:
-            {transaction_details.status}
-          </div>
-          <div>
-            Quantity: {transaction_details.quantity} Price:{" "}
-            {transaction_details.current_price}
-          </div>
-        </div>
-      )}
     </Box>
   );
 }

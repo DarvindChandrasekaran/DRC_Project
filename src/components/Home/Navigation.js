@@ -15,7 +15,7 @@ import WithoutNav from "./WithoutNav";
 import WithNav from "./WithNav";
 import WithSideBar from "./WithSideBar";
 import { SiteDataContext } from "../../SiteData";
-import avatarSample from "../../assets/Logo/avatar_sample.png";
+import avatarSample from "../../assets/DashboardAsset/userProfile.png";
 
 // Check if user  is logged in
 const RequireLogIn = ({ children }) => {

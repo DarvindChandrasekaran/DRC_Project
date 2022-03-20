@@ -1,0 +1,162 @@
+.dropdown-box {
+  margin-top: -5px;
+  margin-left: 2px;
+  height: 30vh;
+  overflow: auto;
+  width: 350px;
+  z-index: 3;
+  position: absolute;
+  background: rgba(66, 66, 66, 0.9);
+}
+
+.red {
+  color: #f00606;
+}
+
+.green {
+  color: #11d811;
+}
+
+.coin-pads {
+  padding-left: 10px;
+}
+
+.pair-list:nth-of-type(even) {
+  background-color: rgba(27, 27, 27, 0.5);
+}
+
+.pair-list:nth-of-type(odd) {
+  background: transparent;
+}
+
+#dropdown-coin-name {
+  text-align: start;
+}
+
+.dropdown-icon {
+  max-width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  padding: 5px 10px;
+}
+
+.interval-filter {
+  width: fit-content;
+  height: fit-content;
+}
+
+.interval-filter > div {
+  padding: 5px 20px;
+}
+
+.mins {
+  border-radius: 5px 0 0 5px;
+}
+
+.mos {
+  border-radius: 0 5px 5px 0;
+}
+
+.db-chart {
+  display: flex;
+  flex-direction: row;
+  width: 800px;
+}
+
+.buy-btn {
+  width: 200px;
+  height: 300px;
+}
+
+#dropdown-coin-header-name {
+  text-align: start;
+}
+
+.dropdown-coin-header {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  width: 100%;
+  display: inline-table;
+  color: white;
+  font-size: 0.875rem;
+  table-layout: fixed;
+  vertical-align: middle;
+  background: rgba(27, 27, 27, 0.9);
+  text-align: center;
+}
+
+.market-chart-title {
+  display: flex;
+  align-items: center;
+}
+
+#mchart-title-name {
+  font-weight: 700;
+  font-size: 1.5rem;
+  padding: 0 15px;
+}
+
+#mchart-title-price {
+  padding-right: 15px;
+}
+
+.hide-header {
+  display: none;
+}
+
+.mchart-title-and-filter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.arrow {
+  display: inline-block;
+  padding: 0.1vw;
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  border: solid #11d811;
+  border-width: 0 3px 3px 0;
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  border: solid #f00606;
+  border-width: 0 3px 3px 0;
+}
+
+@media only screen and (max-width: 600px) {
+  .mchart-title-and-filter {
+    flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .dropdown-box {
+    width: 280px;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .mchart-title-and-filter {
+    display: block;
+  }
+  #mchart-title-price {
+    font-size: 4vw;
+  }
+  #mchart-title-name {
+    font-size: 6vw;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .title-section {
+    margin-top: 3vh;
+  }
+}

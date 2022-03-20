@@ -28,7 +28,7 @@ const Profile = (props) => {
   //REQ TO BE FOR UPDATE USER DETAILS
   const updateUser = (data) => {
     let is_authenticated = checkJWT();
-    console.log(is_authenticated);
+
     if (is_authenticated) {
       const { loginid } = user_data;
       const user_info = {
@@ -36,7 +36,7 @@ const Profile = (props) => {
         loginid: user_data.loginid,
         ...data,
       };
-      console.log(user_info);
+
       const req = new Request(`${BASE_URL}/user/profile/update/${loginid}`, {
         method: "POST",
         headers: new Headers({
@@ -49,7 +49,6 @@ const Profile = (props) => {
           if (data.error) {
             setErrorMessage(data.error);
           } else {
-            console.log(data);
             setMessages(
               "Data sucessfully saved. Changes will take effect on your next login."
             );
@@ -63,7 +62,6 @@ const Profile = (props) => {
 
   const onSubmit = (data) => {
     updateUser(data);
-    alert(JSON.stringify(data));
   };
 
   //Check if user_data is ready
@@ -131,7 +129,8 @@ const Profile = (props) => {
                 placeholder="Email..."
                 {...register("email", {
                   required: "This field is required.",
-                  pattern: /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/,
+                  pattern:
+                    /^[a-zA-Z0-9.!#$%&’*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
                 })}
               />
             </div>

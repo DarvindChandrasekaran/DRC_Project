@@ -1,0 +1,19 @@
+.list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.list-container > .slider-title {
+  width: 96%;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  margin-bottom: 10px;
+}
+
+.list-container > .slider {
+  width: 96%;
+}

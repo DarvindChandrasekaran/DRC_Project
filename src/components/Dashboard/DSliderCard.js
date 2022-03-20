@@ -1,68 +1,91 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import Avatar from "@mui/material/Avatar";
-import { styled } from "@mui/material/styles";
-import useBinanceData from "../ApiBinance/binance-data";
+import {
+  getCurrentCryptoPrice,
+  getDailyCryptoChange,
+} from "../ApiBinance/rest-binance-data";
+import "./DSliderCard.css";
 
-const CardContentNoPadding = styled(CardContent)(`
-  padding: 0;
-  &:last-child {
-    padding-bottom: 0;
+const DSliderCard = ({ pair, src, name, data, onCardClick }) => {
+  const [price, setPrice] = React.useState(0);
+  const [change_percent, setChangePercent] = React.useState(0);
+  const [bought_price, setBoughtPrice] = React.useState(0);
+  const [change, setChange] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
+
+  const calculateBoughtPrice = React.useCallback(
+    (price) => {
+      let qty_bought = 0;
+      let total_bought = 0;
+      let total_bought_price = 0;
+
+      const bought_data = data.filter((d) => d.transaction_type === "buy");
+
+      bought_data.forEach((d) => {
+        qty_bought += d.quantity;
+        total_bought += d.quantity * d.current_price;
+        total_bought_price += d.current_price;
+      });
+
+      const profit = price * qty_bought - total_bought;
+      const avg_bought_price = total_bought_price / bought_data.length;
+
+      setChange(profit.toFixed(2));
+      setBoughtPrice(avg_bought_price.toFixed(2));
+      setLoading(false);
+    },
+    [data]
+  );
+
+  const onClickHandler = () => {
+    onCardClick(name, bought_price);
+  };
+
+  React.useEffect(() => {
+    const promise1 = getCurrentCryptoPrice(pair);
+    const promise2 = getDailyCryptoChange(pair);
+
+    Promise.all([promise1, promise2]).then((values) => {
+      const [current_price, daily_change] = values;
+      setPrice(current_price);
+      setChangePercent(daily_change[0].priceChangePercent);
+      calculateBoughtPrice(current_price);
+    });
+  }, [calculateBoughtPrice, pair]);
+
+  if (loading) {
+    return (
+      <div className="dslider-card">
+        <div className="crypto-detail">Loading..</div>
+      </div>
+    );
   }
-  
-`);
 
-const RenderCard = ({ pair, src, name }) => {
-  const [, , , , , close, , , percent] = useBinanceData(pair);
   return (
-    <Card sx={{ maxWidth: 195, maxHeight: 125, borderRadius: 3 }}>
-      <CardHeader
-        className="card-header"
-        sx={{ height: 30, bgcolor: "#2D2C56" }}
-        avatar={
-          <Avatar
-            src={src}
-            sx={{ bgcolor: "#2D2C56", width: 40, height: 40 }}
-          />
-        }
-        titleTypographyProps={{
-          fontSize: 14,
-          align: "left",
-          color: "white",
-        }}
-        subheaderTypographyProps={{
-          fontSize: 14,
-          fontWeight: 700,
-          color: "white",
-        }}
-        title={name}
-        subheader="12"
-      />
-
-      <CardContentNoPadding sx={{ bgcolor: "#2D2C56" }}>
-        <div className="card-content">
-          <div className="card-col card-col-l">
-            <p>24h %</p>
-            <p>Profit/Loss</p>
-            <p>Bought price</p>
-          </div>
-          <div className="card-col card-col-r">
-            <p
-              className={`coin-precentage ${
-                Number.parseFloat(percent) > 0 ? "green" : "red"
-              }`}
-            >
-              {Number.parseFloat(percent).toFixed(2)}%
-            </p>
-            <p>1231231</p>
-            <p></p>
-          </div>
+    <div className="dslider-card" onClick={onClickHandler}>
+      <div className="crypto-detail">
+        <img src={src} className="image" alt={name} />
+        <div className="details">
+          {pair}
+          <br />
+          <strong>{price} USD</strong>
         </div>
-      </CardContentNoPadding>
-    </Card>
+      </div>
+      <div className="crypo-statistics">
+        <div className="stats-row">
+          <div className="item">24h %</div>
+          <div className="value">{change_percent}</div>
+        </div>
+        <div className="stats-row">
+          <div className="item">Bought Price</div>
+          <div className="value">{bought_price}</div>
+        </div>
+        <div className="stats-row">
+          <div className="item">Profit/Loss</div>
+          <div className="value">{change} USD</div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default RenderCard;
+export default DSliderCard;

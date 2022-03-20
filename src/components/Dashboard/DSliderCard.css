@@ -1,0 +1,44 @@
+.dslider-card {
+  font-family: "Red Hat Display", sans-serif;
+  width: 193px;
+  background-color: #2d2c56;
+  margin-right: 15px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 100px;
+}
+
+.dslider-card:hover {
+  background-color: #474686;
+}
+
+.crypto-detail {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.crypto-detail > .image {
+  width: 40px;
+  height: 40px;
+}
+
+.crypto-detail > .details {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto 0 15px;
+}
+
+.stats-row {
+  width: 100%;
+  display: inline-flex;
+  color: #a3a3a3;
+  font-size: 14px;
+}
+
+.stats-row > .value {
+  margin-left: auto;
+}

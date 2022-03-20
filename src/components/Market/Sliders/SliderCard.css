@@ -1,0 +1,90 @@
+.slider-card {
+  font-family: "Red Hat Display", sans-serif;
+  background-color: #010023;
+  height: fit-content;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 10px 21px;
+  width: 220px;
+  margin: 0 4px;
+}
+
+.slider-card > .header {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header > .name {
+  color: white;
+  font-weight: bold;
+}
+
+.header > .change-indicator {
+  display: inline-flex;
+  align-items: center;
+}
+
+.change-indicator.gain {
+  color: #00ff40;
+}
+
+.change-indicator.loss {
+  color: #ff0000;
+}
+
+.change-indicator > .icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin-right: 7px;
+}
+
+.change-indicator.loss > .icon {
+  transform: rotate(180deg);
+}
+
+.slider-card > .body {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+}
+
+.body > .img-wrapper {
+  margin-top: auto;
+}
+.img-wrapper > img {
+  width: 38px;
+  height: 38px;
+}
+
+.body > .details-wrapper {
+  width: 100%;
+  margin: 10px 0 0 10px;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.details-wrapper > .fullname {
+  font-size: 14px;
+  line-height: 19px;
+  color: white;
+}
+
+.details-wrapper > .price {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 700;
+  color: white;
+}
+
+.login-signup-section {
+  text-align: center;
+}
+
+.market-links {
+  text-decoration: none;
+  color: #00ff40;
+}

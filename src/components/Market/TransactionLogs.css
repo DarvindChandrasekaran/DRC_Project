@@ -1,0 +1,72 @@
+.transaction {
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  margin-top: 10px;
+}
+
+.txn-card {
+  width: 100%;
+  box-sizing: border-box;
+  display: inline-flex;
+  background: #373737;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  color: white;
+  padding: 16px 21px;
+  margin-bottom: 10px;
+}
+
+.txn-card.animate {
+  animation: slideLeft 0.5s linear;
+}
+
+.txn-card.animate-down {
+  animation: slideDown 0.5s linear;
+}
+
+.txn-type {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 32px;
+  text-transform: capitalize;
+  margin: auto;
+  margin-left: 0;
+}
+
+.txn-type.buy {
+  color: #60ff88;
+}
+
+.txn-type.sell {
+  color: #ff5964;
+}
+
+.txn-details > .header {
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.txn-details > .body {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translate(15px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translate(0, -78px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
